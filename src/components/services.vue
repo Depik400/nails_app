@@ -22,9 +22,10 @@
       </li>
     </ul>
     <ul>
-      <li v-for="item in servicesAd" :key="item.id">
+      <li v-for="(item,index) in servicesAd" :key="item.id" @click="(!item.isNumerable)?servicesAd[index].isSelected = !servicesAd[index].isSelected:''">
         <p>{{ item.description }} - цена: {{ item.price }}р.</p>
-        <img src="../assets/img/green_success.png" alt="" srcset="" />
+        <input v-if="item.isNumerable" class="count" type="number" v-model="servicesAd[index].count" @change="selectServiceAd(index)"> 
+        <img :style="[item.isSelected ? {'opacity':'1'}:{'opacity':'0'}]" src="../assets/img/green_success.png" alt="" srcset="" />
       </li>
     </ul>
   </div>
@@ -36,7 +37,8 @@ export default {
   data() {
     return {
       selectedService: -1,
-      selectedAdService: -1,
+      selectedAdService: [],
+      price:0,
       services: [
         {
           id: 1,
@@ -66,18 +68,24 @@ export default {
           description: "Ремонт 1 ногтя",
           price: 50,
           isSelected: false,
+          count:0,
+          isNumerable:true,
         },
         {
           id: 5,
           description: "Наращивание 1 ногтя",
           price: 100,
           isSelected: false,
+          count:0,
+          isNumerable:true,
         },
         {
           id: 6,
           description: "Укрепление гелем/полигелем",
           price: 200,
           isSelected: false,
+          count:0,
+          isNumerable:false,
         },
       ],
     };
@@ -94,6 +102,18 @@ export default {
       this.selectedService = id;
       this.services[id].isSelected = true;
     },
+
+    selectServiceAd:function(index) {
+      console.log(index + this.servicesAd[index].count);
+      if(this.servicesAd[index].count < 0) this.servicesAd[index].count = 0
+      if(this.servicesAd[index].count > 10) this.servicesAd[index].count = 10
+      if(this.servicesAd[index].count >= 1){
+        this.servicesAd[index].isSelected = true;
+        return
+      }
+      else this.servicesAd[index].isSelected = false;
+    }
+
   },
 };
 </script>
@@ -120,4 +140,19 @@ li {
   align-items: center;
   border-bottom: 1px dotted rgba(128, 128, 128, 0.4);
 }
+.count{
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  width: 30px;
+  border-radius: 20px;
+  -moz-appearance: textfield;
+  text-align: center;
+}
+
+input.count::-webkit-outer-spin-button,
+input.count::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
 </style>

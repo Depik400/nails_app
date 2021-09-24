@@ -71,6 +71,7 @@ export default {
         max-width: 700px;
         width: 100%;
         flex-wrap: wrap;
+        max-height: 400px;
  }
  li.elements{
     padding: 10px;
