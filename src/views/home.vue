@@ -17,6 +17,8 @@
     <calendar
       :class="[isRecordVisible ? 'calendar_open' : 'calendar_hide']"
       v-if="isRecordTimerLeft"
+      :dateIndex="aboutClient.selectedDateId"
+      @selectDateEvent="getDateFromComponent"
     />
     <services
       v-if="isServicesTimerLeft"
@@ -25,7 +27,7 @@
     <div class="button_prev_next_wrapper" v-if="isPrevNextButtonVisible">
       <input
         type="button"
-        style="margin: 10px 10px; width:100%;"
+        style="margin: 10px 10px; width: 100%"
         value="Назад"
         @click="
           numberOfList--;
@@ -34,7 +36,7 @@
       />
       <input
         type="button"
-        style="margin: 10px 10px; width:100%;"
+        style="margin: 10px 10px; width: 100%"
         value="Вперед"
         @click="
           numberOfList++;
@@ -42,6 +44,15 @@
         "
       />
     </div>
+    <p
+      :class="
+        error != ''
+          ? { display: 'block', fontSize: '20px', color: 'red' }
+          : { display: 'none' }
+      "
+    >
+      {{ errorHandler }}
+    </p>
   </div>
 </template>
 
@@ -59,17 +70,34 @@ export default {
       isButtonTimerLeft: false,
       isPrevNextButtonVisible: false,
       isServicesReleased: false,
-      isServicesTimerLeft:false,
+      isServicesTimerLeft: false,
+      error: "",
       numberOfList: 0,
+      aboutClient: {
+        selectedDateId: -1,
+        selectedServicesId: -1,
+        selectedServicesAdId: -1,
+      },
     };
   },
   components: {
     calendar: record,
     services,
   },
-
+  computed: {
+    errorHandler: function () {
+      if (this.error == "calendar_error") {
+        return "Вы не выбрали дату";
+      }
+      if (this.error == "services_error") {
+        return "Вы не выбрали услуги";
+      }
+      return "";
+    },
+  },
   methods: {
     recordRelease: function (list) {
+      console.log("here");
       switch (list) {
         case 0: {
           this.isRecordReleased = false;
@@ -87,7 +115,7 @@ export default {
           this.isRecordVisible = true;
           this.isServicesReleased = false;
           setTimeout(() => {
-            this.isServicesTimerLeft=false;
+            this.isServicesTimerLeft = false;
             this.isButtonTimerLeft = true;
             this.isRecordTimerLeft = true;
             this.isPrevNextButtonVisible = true;
@@ -95,6 +123,14 @@ export default {
           break;
         }
         case 2: {
+          if (this.aboutClient.selectedDateId == -1) {
+            this.numberOfList--;
+            this.error = "calendar_error";
+            setTimeout(() => (this.error = ""), 3000);
+            return;
+          } else {
+            this.error = "";
+          }
           this.isRecordReleased = false;
           this.isRecordVisible = false;
           setTimeout(() => {
@@ -108,6 +144,9 @@ export default {
     servicesRelease: function () {
       this.isRecordVisible = !this.isRecordVisible;
       this.isServicesReleased = !this.isServicesReleased;
+    },
+    getDateFromComponent: function (date) {
+      this.aboutClient.selectedDateId = date;
     },
   },
 };
@@ -164,7 +203,7 @@ input {
 input[type="button"] {
   padding: 15px 40px;
   background: none;
-  border: 3px solid #f59282;
+  border: 3px solid #f59182;
   border-radius: 30px;
   font-size: 20px;
   color: #f59282;
@@ -210,10 +249,10 @@ input[type="button"].opened {
   animation-delay: 1.1s;
 }
 
-@media screen and (max-width:400px) {
-  
-  .button_prev_next_wrapper{
-  flex-direction: column;}
+@media screen and (max-width: 400px) {
+  .button_prev_next_wrapper {
+    flex-direction: column;
+  }
 }
 
 @keyframes buttons_opacity {

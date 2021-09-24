@@ -1,92 +1,177 @@
 <template>
   <div class="recording">
-      <p>Выберите подходящий для себя день</p>
-      <ul>
-        <li class="elements" v-for="item in calendar" :key="item.id">
-          <p> {{item.month}},{{item.day}} - {{item.hour}}</p>
-        </li>
-      </ul>
+    <p>Выберите подходящий для себя день</p>
+    <ul class="recording_ul">
+      <li
+        class="elements"
+        :style="[item.isSelected ? { background: '#f59182' } : '']"
+        v-for="(item, index) in calendar"
+        :key="item.id"
+        @click="selectDate(index)"
+      >
+        <p>{{ item.month }},{{ item.day }} - {{ item.hour }}</p>
+      </li>
+    </ul>
     <div class="register_window"></div>
   </div>
 </template>
 
 <script>
 export default {
-    name:'recording',
-    data(){
-        return{
-        login:'',
-        password:'',
-        email:'email',
-        isSingUp:false,
-        calendar:[
-            {
-                id:1,
-                month: 'Январь',
-                day: 1,
-                hour:'15:00'
-            },
-              {
-                id:2,
-                month: 'Сентябрь',
-                day: 5,
-                hour:'10:00'
-            },
-              {
-                id:3,
-                month: 'Октябрь',
-                day: 12,
-                hour:'18:00'
-            },
-                        {
-                id:1,
-                month: 'Январь',
-                day: 1,
-                hour:'15:00'
-            },
-              {
-                id:2,
-                month: 'Сентябрь',
-                day: 5,
-                hour:'10:00'
-            },
-              {
-                id:3,
-                month: 'Октябрь',
-                day: 12,
-                hour:'18:00'
-            }
-        ]
-    }
-    }
-}
+  name: "recording",
+  props: ["dateIndex"],
+  data() {
+    return {
+      login: "",
+      password: "",
+      email: "email",
+      isSingUp: false,
+      selectedDateIndex: -1,
+      calendar: [
+        {
+          id: 1,
+          month: "Январь",
+          day: 1,
+          hour: "15:00",
+          isSelected: false,
+        },
+        {
+          id: 2,
+          month: "Сентябрь",
+          day: 5,
+          hour: "10:00",
+          isSelected: false,
+        },
+        {
+          id: 3,
+          month: "Октябрь",
+          day: 12,
+          hour: "18:00",
+          isSelected: false,
+        },
+        {
+          id: 4,
+          month: "Январь",
+          day: 1,
+          hour: "15:00",
+          isSelected: false,
+        },
+        {
+          id: 5,
+          month: "Сентябрь",
+          day: 5,
+          hour: "10:00",
+          isSelected: false,
+        },
+        {
+          id: 6,
+          month: "Октябрь",
+          day: 12,
+          hour: "18:00",
+          isSelected: false,
+        },
+        {
+          id: 7,
+          month: "Январь",
+          day: 1,
+          hour: "15:00",
+          isSelected: false,
+        },
+        {
+          id: 8,
+          month: "Сентябрь",
+          day: 5,
+          hour: "10:00",
+          isSelected: false,
+        },
+        {
+          id: 9,
+          month: "Октябрь",
+          day: 12,
+          hour: "18:00",
+          isSelected: false,
+        },
+      ],
+    };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.dateIndex != -1) {
+        let index = this.calendar.findIndex(
+          (item) => item.id == this.dateIndex
+        );
+        if (index == -1) return;
+        this.calendar[index].isSelected = true;
+        this.selectedDateIndex = index;
+        return;
+      }
+    });
+  },
+
+  methods: {
+    selectDate: function (index) {
+      if (
+        this.selectedDateIndex == index &&
+        this.calendar[this.selectedDateIndex].isSelected
+      ) {
+        this.selectedDateIndex = -1;
+
+        this.calendar[index].isSelected = !this.calendar[index].isSelected;
+        this.$emit("selectDateEvent", -1);
+        return;
+      }
+      this.calendar[index].isSelected = !this.calendar[index].isSelected;
+      if (this.selectedDateIndex != -1)
+        this.calendar[this.selectedDateIndex].isSelected = false;
+      this.selectedDateIndex = index;
+      this.$emit("selectDateEvent", this.calendar[this.selectedDateIndex].id);
+    },
+  },
+};
 </script>
 
 <style>
- ul{
-     list-style-type: none;
-        margin: 0;
-        padding:0;
-        display: flex;
-        max-width: 700px;
-        width: 100%;
-        flex-wrap: wrap;
-        max-height: 400px;
-        overflow: scroll;
- }
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  max-width: 700px;
+  width: 100%;
+  max-height: 400px;
+}
 
-  @media screen and (max-width:400px) {
-    ul{
-      flex-wrap: nowrap;
-    }
+.recording_ul {
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  overflow-y: scroll;
+  flex-basis: 10%;
+}
+
+.recording_ul::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+.recording_ul::-webkit-scrollbar-thumb {
+  background: #f59282;
+}
+
+@media screen and (max-width: 400px) {
+  ul {
+    flex-wrap: nowrap;
   }
+}
 
- li.elements{
-   flex-basis: 30%;
-    padding: 10px;
-    margin: 5px;
-    border:1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 15px;
-    box-shadow: 0px 1px 5px 1px rgba(128, 128, 128, 0.3);
- }
+li.elements {
+  flex-basis: 40%;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 50%;
+  margin: 5px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 15px;
+  box-shadow: 0px 1px 5px 1px rgba(128, 128, 128, 0.3);
+}
 </style>

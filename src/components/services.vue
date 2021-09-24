@@ -1,5 +1,6 @@
 <template>
   <div class="services">
+    <p style="margin: 10px auto; font-size:20px;font-weight:bold;">Услуги</p>
     <ul>
       <li
         v-for="(item, index) in services"
@@ -28,6 +29,7 @@
         <img :style="[item.isSelected ? {'opacity':'1'}:{'opacity':'0'}]" src="../assets/img/green_success.png" alt="" srcset="" />
       </li>
     </ul>
+<p style="margin: px auto; font-size:20px;font-weight:bold;">Дизайны</p>
   </div>
 </template>
 
