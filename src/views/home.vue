@@ -25,7 +25,7 @@
     <div class="button_prev_next_wrapper" v-if="isPrevNextButtonVisible">
       <input
         type="button"
-        style="margin: 0 10px"
+        style="margin: 10px 10px; width:100%;"
         value="Назад"
         @click="
           numberOfList--;
@@ -34,7 +34,7 @@
       />
       <input
         type="button"
-        style="margin: 0 10px"
+        style="margin: 10px 10px; width:100%;"
         value="Вперед"
         @click="
           numberOfList++;
@@ -203,10 +203,17 @@ input[type="button"].opened {
 }
 
 .button_prev_next_wrapper {
+  display: flex;
   margin: 20px;
   opacity: 0;
   animation: buttons_opacity 0.6s linear forwards;
   animation-delay: 1.1s;
+}
+
+@media screen and (max-width:400px) {
+  
+  .button_prev_next_wrapper{
+  flex-direction: column;}
 }
 
 @keyframes buttons_opacity {

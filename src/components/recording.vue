@@ -72,8 +72,17 @@ export default {
         width: 100%;
         flex-wrap: wrap;
         max-height: 400px;
+        overflow: scroll;
  }
+
+  @media screen and (max-width:400px) {
+    ul{
+      flex-wrap: nowrap;
+    }
+  }
+
  li.elements{
+   flex-basis: 30%;
     padding: 10px;
     margin: 5px;
     border:1px solid rgba(128, 128, 128, 0.3);

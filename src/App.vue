@@ -113,8 +113,8 @@ body {
 
 .container {
   display: flex;
+  min-height: 100%;
   flex-direction: column;
-  height: 100%;
   justify-content: space-between;
   align-items: center;
 }
