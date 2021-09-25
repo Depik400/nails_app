@@ -23,13 +23,20 @@
       </li>
     </ul>
     <ul>
-      <li v-for="(item,index) in servicesAd" :key="item.id" @click="(!item.isNumerable)?servicesAd[index].isSelected = !servicesAd[index].isSelected:''">
+      <li v-for="(item,index) in servicesAd" :key="item.id" @click="selectServiceAd(index)">
         <p>{{ item.description }} - цена: {{ item.price }}р.</p>
         <input v-if="item.isNumerable" class="count" type="number" v-model="servicesAd[index].count" @change="selectServiceAd(index)"> 
         <img :style="[item.isSelected ? {'opacity':'1'}:{'opacity':'0'}]" src="../assets/img/green_success.png" alt="" srcset="" />
       </li>
     </ul>
 <p style="margin: px auto; font-size:20px;font-weight:bold;">Дизайны</p>
+        <ul style="max-height:none;">
+      <li v-for="(item,index) in design" :key="item.id" @click="selectDesign(index)">
+        <p>{{ item.description }} - Все ногти: {{ item.price }}р.</p>
+        <input v-if="item.isNumerable" class="count" type="number" v-model="design[index].count" @change="selectServiceAd(index)"> 
+        <img :style="[item.isSelected ? {'opacity':'1'}:{'opacity':'0'}]" src="../assets/img/green_success.png" alt="" srcset="" />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -40,6 +47,7 @@ export default {
     return {
       selectedService: -1,
       selectedAdService: [],
+      selectedDesign:[],
       price:0,
       services: [
         {
@@ -90,6 +98,88 @@ export default {
           isNumerable:false,
         },
       ],
+      design:[
+                {
+          id: 1,
+          description: "Френч",
+          price: 300,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+              {
+          id: 2,
+          description: "Мрамор\\Текстуры | 2 ногтя - 50р",
+          price: 200,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 10,
+          description: "Слайдеры | 2 ногтя - 50р",
+          price: 200,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 3,
+          description: "Блестки | 2 ногтя - 50р",
+          price: 200,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 4,
+          description: "Фольга | 2 ногтя - 50р",
+          price: 200,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 5,
+          description: "Поталь | 2 ногтя - 50р",
+          price: 200,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                              {
+          id: 6,
+          description: "Стемпинг | 2 ногтя - 100р",
+          price: 400,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 7,
+          description: "Рисунки | 2 ногтя - 100р",
+          price: 400,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 8,
+          description: "Градиент | 2 ногтя - 100р",
+          price: 400,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+                      {
+          id: 9,
+          description: "Объемные фигуры | 2 ногтя - 100р",
+          price: 400,
+          isSelected: false,
+          count:0,
+          isNumerable:false,
+        },
+      ]
     };
   },
   methods: {
@@ -98,26 +188,64 @@ export default {
       if (this.selectedService == id) {
         this.services[this.selectedService].isSelected = false;
         this.selectedService = -1;
+        this.$emit('sendService',this.selectedService);
         return;
       }
       if (this.selectedService != -1) this.services[this.selectedService].isSelected = false;
       this.selectedService = id;
       this.services[id].isSelected = true;
+      this.$emit('sendService',this.selectedService);
     },
 
     selectServiceAd:function(index) {
       console.log(index + this.servicesAd[index].count);
+
+      if(!this.servicesAd[index].isNumerable){
+        if(this.servicesAd[index].isSelected){
+          this.selectedAdService = this.selectedAdService.filter(e => e != this.servicesAd[index].id);
+        this.servicesAd[index].isSelected = false;
+        this.$emit('sendServiceAd',this.selectedAdService);
+        return;
+        } else{
+             this.selectedAdService.push(this.servicesAd[index].id);
+        this.servicesAd[index].isSelected = true;
+        this.$emit('sendServiceAd',this.selectedAdService);
+        return
+        }
+      }
+
       if(this.servicesAd[index].count < 0) this.servicesAd[index].count = 0
       if(this.servicesAd[index].count > 10) this.servicesAd[index].count = 10
       if(this.servicesAd[index].count >= 1){
+        this.selectedAdService.push(this.servicesAd[index].id);
         this.servicesAd[index].isSelected = true;
+        this.$emit('sendServiceAd',this.selectedAdService);
         return
       }
-      else this.servicesAd[index].isSelected = false;
-    }
+      else {
+        this.selectedAdService = this.selectedAdService.filter(e => e != this.servicesAd[index].id);
+        this.servicesAd[index].isSelected = false;
+        this.$emit('sendServiceAd',this.selectedAdService);
+        }
+    },
 
+    selectDesign: function (index) {
+      let id = this.design[index].id;
+      if(this.selectedDesign.includes(id)){
+        this.design[index].isSelected = false;
+        this.selectedDesign = this.selectedDesign.filter(item => item != id);
+        this.$emit('sendDesign',this.selectedDesign);
+        return;
+      }
+      else{
+        this.design[index].isSelected  = true;
+        this.selectedDesign.push(id);
+        this.$emit('sendDesign',this.selectedDesign);
+        return;
+      }
   },
-};
+} 
+}
 </script>
 
 <style>

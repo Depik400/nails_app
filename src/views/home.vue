@@ -23,6 +23,9 @@
     <services
       v-if="isServicesTimerLeft"
       :class="[isServicesReleased ? 'services_open' : 'services_hide']"
+      @sendService="getServiceFromComponent"
+      @sendServiceAd="getServiceAdFromComponent"
+      @sendDesign="getDesignFromComponent"
     />
     <div class="button_prev_next_wrapper" v-if="isPrevNextButtonVisible">
       <input
@@ -75,8 +78,9 @@ export default {
       numberOfList: 0,
       aboutClient: {
         selectedDateId: -1,
-        selectedServicesId: -1,
-        selectedServicesAdId: -1,
+        service: -1,
+        serviceAd: -1,
+        design: -1
       },
     };
   },
@@ -147,6 +151,16 @@ export default {
     },
     getDateFromComponent: function (date) {
       this.aboutClient.selectedDateId = date;
+    },
+
+    getServiceFromComponent: function (service) {
+      this.aboutClient.service = service;
+    },
+    getServiceAdFromComponent: function (serviceAd) {
+      this.aboutClient.serviceAd = serviceAd;
+    },
+    getDesignFromComponent: function (design) {
+      this.aboutClient.design = design;
     },
   },
 };
