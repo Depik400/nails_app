@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: "recording",
   props: ["dateIndex"],
@@ -27,73 +28,13 @@ export default {
       email: "email",
       isSingUp: false,
       selectedDateIndex: -1,
-      calendar: [
-        {
-          id: 1,
-          month: "Январь",
-          day: 1,
-          hour: "15:00",
-          isSelected: false,
-        },
-        {
-          id: 2,
-          month: "Сентябрь",
-          day: 5,
-          hour: "10:00",
-          isSelected: false,
-        },
-        {
-          id: 3,
-          month: "Октябрь",
-          day: 12,
-          hour: "18:00",
-          isSelected: false,
-        },
-        {
-          id: 4,
-          month: "Январь",
-          day: 1,
-          hour: "15:00",
-          isSelected: false,
-        },
-        {
-          id: 5,
-          month: "Сентябрь",
-          day: 5,
-          hour: "10:00",
-          isSelected: false,
-        },
-        {
-          id: 6,
-          month: "Октябрь",
-          day: 12,
-          hour: "18:00",
-          isSelected: false,
-        },
-        {
-          id: 7,
-          month: "Январь",
-          day: 1,
-          hour: "15:00",
-          isSelected: false,
-        },
-        {
-          id: 8,
-          month: "Сентябрь",
-          day: 5,
-          hour: "10:00",
-          isSelected: false,
-        },
-        {
-          id: 9,
-          month: "Октябрь",
-          day: 12,
-          hour: "18:00",
-          isSelected: false,
-        },
-      ],
     };
   },
+
+  computed:{
+    ...mapGetters(['calendar'])
+  },
+
   mounted() {
     this.$nextTick(() => {
       if (this.dateIndex != -1) {
