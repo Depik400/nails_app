@@ -31,7 +31,7 @@
       @sendDesign="getDesignFromComponent"
     />
 
-    <conclusion v-if="isResultTimerLeft"  :class="[isResultReleased ? 'conclusion_open' : 'conclusion_hide']" />
+    <conclusion v-if="isResultTimerLeft" :aboutUser="aboutClient"  :class="[isResultReleased ? 'conclusion_open' : 'conclusion_hide']" />
 
     <div v-if="isRecordTimerLeft || numberOfList > 1" :class="['button_prev_next_wrapper',isPrevNextButtonVisible ? 'button_visible' : 'button_hide']">
       <input

@@ -88,7 +88,9 @@ ul {
   flex-direction: row;
   overflow-y: scroll;
   flex-basis: 10%;
+  background:linear-gradient(transparent 80%, white);
 }
+
 
 .recording_ul::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */
