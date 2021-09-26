@@ -308,7 +308,7 @@ input[type="button"].opened {
 
 @keyframes open_record_button {
   0% {
-    transform: translateY(-500px) scale(0.4);
+    transform: translateY(500px) scale(0.4);
     opacity: 0;
   }
   100% {
