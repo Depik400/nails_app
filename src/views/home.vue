@@ -339,6 +339,7 @@ input[type="button"].opened {
 @media screen and (max-width: 400px) {
   .button_prev_next_wrapper {
     flex-direction: column;
+    align-items: center;
   }
 }
 

@@ -88,7 +88,6 @@ ul {
   flex-direction: row;
   overflow-y: scroll;
   flex-basis: 10%;
-  background:linear-gradient(transparent 80%, white);
 }
 
 

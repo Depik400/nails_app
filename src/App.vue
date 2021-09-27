@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: "main_page",
   data() {
@@ -88,6 +90,12 @@ export default {
       console.log("here");
       this.hoverOnPhone = !this.hoverOnPhone;
     },
+  },
+  computed:{
+    ...mapActions(['setToken'])
+  },
+  mounted() {
+    this.setToken;
   },
 };
 </script>
@@ -122,6 +130,9 @@ body {
 .router-view-container {
   display: flex;
   align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 header,
