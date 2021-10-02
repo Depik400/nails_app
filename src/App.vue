@@ -23,7 +23,9 @@
                 alt=""
                 srcset=""
             /></router-link>
-            <a class="header_router_link links" href="https://www.instagram.com/pinknails_krsk/"
+            <a
+              class="header_router_link links"
+              href="https://www.instagram.com/pinknails_krsk/"
               >Мои работы</a
             >
             <router-link class="header_router_link links" to="/services"
@@ -70,7 +72,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
 export default {
   name: "main_page",
@@ -91,11 +93,40 @@ export default {
       this.hoverOnPhone = !this.hoverOnPhone;
     },
   },
-  computed:{
-    ...mapActions(['setToken'])
+
+  created() {
+    if (localStorage.getItem("token") !== null) {
+      console.log("stay here");
+    } else {
+      console.log("bad");
+    }
+  },
+
+  computed: {
+    ...mapActions([
+      "setToken",
+      "setDesign",
+      "setCalendar",
+      "setServices",
+      "setServicesAd",
+    ]),
   },
   mounted() {
+    this.axios
+      .get("/api/user", {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then((result) => {
+        console.log(result);
+      });
+
     this.setToken;
+    this.setDesign;
+    this.setCalendar;
+    this.setServices;
+    this.setServicesAd;
   },
 };
 </script>
@@ -171,8 +202,8 @@ header {
     justify-content: space-evenly;
   }
 
-  header{
-    height:130px;
+  header {
+    height: 130px;
   }
 }
 
@@ -239,22 +270,24 @@ header {
   color: black;
 }
 
-.button_wrapper{
+.button_wrapper {
   display: flex;
   align-items: center;
 }
 
-.links{
+.links {
   text-decoration: none;
   color: black;
 }
 
-.link_hover,.links {
+.link_hover,
+.links {
   border-bottom: none;
   transition: all ease 0.1s;
 }
 
-.link_hover:hover, .links:hover {
+.link_hover:hover,
+.links:hover {
   border-bottom: 2px solid black;
 }
 </style>

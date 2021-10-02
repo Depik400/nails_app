@@ -31,9 +31,19 @@
       @sendDesign="getDesignFromComponent"
     />
 
-    <conclusion v-if="isResultTimerLeft" :aboutUser="aboutClient"  :class="[isResultReleased ? 'conclusion_open' : 'conclusion_hide']" />
+    <conclusion
+      v-if="isResultTimerLeft"
+      :aboutUser="aboutClient"
+      :class="[isResultReleased ? 'conclusion_open' : 'conclusion_hide']"
+    />
 
-    <div v-if="isRecordTimerLeft || numberOfList > 1" :class="['button_prev_next_wrapper',isPrevNextButtonVisible ? 'button_visible' : 'button_hide']">
+    <div
+      v-if="isRecordTimerLeft || numberOfList > 1"
+      :class="[
+        'button_prev_next_wrapper',
+        isPrevNextButtonVisible ? 'button_visible' : 'button_hide',
+      ]"
+    >
       <input
         type="button"
         style="margin: 10px 10px; width: 100%"
@@ -45,8 +55,8 @@
       />
       <input
         type="button"
-        v-if="numberOfList != 3"
         style="margin: 10px 10px; width: 100%"
+        v-if="nextButtonTimerLeft"
         value="Вперед"
         @click="
           numberOfList++;
@@ -79,6 +89,7 @@ export default {
       isRecordVisible: false,
       isRecordTimerLeft: false,
       isButtonTimerLeft: false,
+      nextButtonTimerLeft: true,
       isPrevNextButtonVisible: false,
       isServicesReleased: false,
       isServicesTimerLeft: false,
@@ -112,7 +123,6 @@ export default {
   },
   methods: {
     recordRelease: function (list) {
-      console.log("here");
       switch (list) {
         case 0: {
           this.isRecordReleased = false;
@@ -157,6 +167,7 @@ export default {
             this.isServicesReleased = true;
             this.isResultTimerLeft = false;
             this.isPrevNextButtonVisible = true;
+            this.nextButtonTimerLeft = true;
           }, 400);
           break;
         }
@@ -172,11 +183,16 @@ export default {
           this.isPrevNextButtonVisible = false;
           this.isServicesReleased = false;
           this.isResultReleased = true;
-            setTimeout(() => {
+          setTimeout(() => {
             this.isServicesTimerLeft = false;
+            this.nextButtonTimerLeft = false;
             this.isResultTimerLeft = true;
             this.isPrevNextButtonVisible = true;
           }, 400);
+          break;
+        }
+        case 4: {
+          this.numberOfList--;
         }
       }
     },
@@ -239,30 +255,30 @@ input {
 
 .button_hide {
   opacity: 0;
-   animation: button_hide 0.4s linear  forwards;
+  animation: button_hide 0.4s linear forwards;
 }
 
 .button_visible {
   opacity: 1;
-   animation: button_visible 0.4s linear 1s forwards;
+  animation: button_visible 0.4s linear 1s forwards;
 }
 
 @keyframes button_hide {
-    0%{
-      opacity: 1;
-    }
-    100%{
-      opacity: 0;
-    }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes button_visible {
-    0%{
-      opacity: 0;
-    }
-    100%{
-      opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes hide_calendar {
