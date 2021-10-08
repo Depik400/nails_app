@@ -1,6 +1,6 @@
 <template>
   <div class="result">
-    <div :style="[authState ? { filter: 'blur(15px)' } : { filter: 'none' }]">
+    <div :style="[orderStatus||authState ? { filter: 'blur(15px)' } : { filter: 'none' }]">
       <p style="font-size: 25px; font-weight: bold">Давайте уточним:</p>
       <p style="font-size: 20px">
         Вы записались на {{ dateItem.month }}, {{ dateItem.day }} в
@@ -48,6 +48,9 @@
         value="Оставить заявку"
         @click="setAuth()"
       />
+    </div>
+    <div class="orderStatus" v-if="orderStatus">
+      <p style="">Gut</p>
     </div>
     <div
       v-if="authState"
@@ -115,6 +118,7 @@ export default {
       authState: false,
       authStateTimer: false,
       authMode: false,
+      orderStatus: false,
       user: {
         email: "",
         login: "",
@@ -172,6 +176,12 @@ export default {
       this.totalSum = totalPrice;
     },
     setAuth: function () {
+
+      if(localStorage.getItem('token') !== null){
+        this.sendServiceInfo();
+        return;
+      }
+
       if (!this.authState) {
         this.authState = !this.authState;
         this.authStateTimer = !this.authStateTimer;
@@ -186,25 +196,34 @@ export default {
     sendServiceInfo: function () {
       let sender = (tr) => {
         this.axios
-          .post("/api/service", {
+          .post("/api/userService", {
+            token: localStorage.getItem('token'),
             date: this.dateItem,
             service: this.selectedService,
             serviceAd: this.selectedAdSerivce,
             design: this.selectedDesign,
           })
           .then((result) => {
-            console.log(result);
+            //console.log(result);
+            if(result.status == 200){
+                this.orderStatus = true;
+            }
           })
           .catch(() => {
-            if(tr == 10){
+            if(tr == 2){
               return;
             }
+
+
             this.setToken;
             setTimeout(() => {
               sender(tr+1);
             }, 500);
+
           });
       };
+
+
       sender(0);
     },
 
@@ -220,10 +239,11 @@ export default {
             console.log(result);
             if(result.status == 200){
               localStorage.setItem('token',result.data.token);
+              this.sendServiceInfo();
             }
           })
           .catch(() => {
-            if (try_count == 10) {
+            if (try_count == 2) {
               return;
             }
             this.setToken;
@@ -256,6 +276,13 @@ export default {
 
 .auth_input_wrapper > p {
   margin: 0;
+}
+
+.orderStatus{
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
 }
 
 .auth_input_wrapper > input {

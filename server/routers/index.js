@@ -16,6 +16,8 @@ router.get('/api/serviceAd',controller.getServiceAd);
 
 router.get('/api/design',controller.getDesign);
 
+router.post('/api/userService',controller.userService);
+
 router.post('/api/logout',(req,res) => {
         console.log(req.body)
         res.send('total');

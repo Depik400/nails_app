@@ -31,6 +31,7 @@
             <router-link class="header_router_link links" to="/services"
               >Услуги</router-link
             >
+
           </nav>
           <div class="contacts_wrapper">
             <a
@@ -109,6 +110,7 @@ export default {
       "setCalendar",
       "setServices",
       "setServicesAd",
+      "setJWT"
     ]),
   },
   mounted() {
@@ -119,7 +121,9 @@ export default {
         },
       })
       .then((result) => {
-        console.log(result);
+        if(result.status != 200){
+          localStorage.clear();
+        }
       });
 
     this.setToken;

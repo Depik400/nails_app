@@ -9,7 +9,7 @@ let vStore = new vuex.Store({
     services: [],
     servicesAd: [],
     design: [],
-
+    JWT:'',
     token: "",
   },
   mutations: {
@@ -19,6 +19,10 @@ let vStore = new vuex.Store({
 
     updateToken(state, token) {
       state.token = token;
+    },
+
+    updateJWT(state,tempJWT){
+      state.JWT = tempJWT;
     },
 
     updateservices(state, tempservices) {
@@ -36,6 +40,10 @@ let vStore = new vuex.Store({
       vue.axios.get('/api/calendar').then(req => {
         commit("updateCalendar",req.data);
       })
+    },
+
+    setJWT({commit},token){
+      commit('updateJWT',token);
     },
 
     setServices({ commit }) {
@@ -76,6 +84,10 @@ let vStore = new vuex.Store({
     },
     token(state){
       return state.token;
+    },
+
+    JWT(state){
+      return state.JWT;
     }
   },
 });

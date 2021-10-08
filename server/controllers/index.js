@@ -6,6 +6,7 @@ const userModel = require("../models/user");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cmdColor = require("chalk");
 
 exports.getToken = (req, res) => {
   let data = { csrfToken: req.csrfToken() };
@@ -97,6 +98,18 @@ exports.singin = (req, res) => {
   });
 };
 
+exports.userService = (req, res) => {
+  //console.log(req.body);
+  let token = req.body.token;
+  jwt.verify(token, "sasdfgfbBBcsgASDt123", async (err, decoded) => {
+    //console.log(decoded);
+    let user = await userModel.findOne({ _id: decoded.userId });
+    console.log(cmdColor.blue("finded User"));
+    console.log(user);
+    res.status(200).send();
+  });
+};
+
 exports.user = (req, res) => {
   let token = req.headers.token;
   jwt.verify(token, "sasdfgfbBBcsgASDt123", (err, decoded) => {
@@ -105,7 +118,7 @@ exports.user = (req, res) => {
         error: "not authorizired",
       });
     }
-    console.log(decoded);   
+    console.log(decoded);
     userModel
       .findOne({ _id: decoded.userId })
       .lean()
@@ -122,5 +135,30 @@ exports.user = (req, res) => {
 };
 
 exports.singup = (req, res) => {
-  console.log(req.body);
+  userModel.findOne({ email: req.body.user.email }, (err, user) => {
+    if (err) {
+      return res.status(404).json({
+        error: "server_error",
+      });
+    }
+    if (!user) {
+      return res.status(401).json({
+        error: "not_found",
+      });
+    }
+    if (user) {
+      bcrypt.compare(req.body.user.pass, user.pass, (err, match) => {
+        if (match) {
+          let token = jwt.sign({ userId: savedU._id }, "sasdfgfbBBcsgASDt123", {
+            expiresIn: 604800, // 1 week
+          });
+          res.status(200).json({
+            token: token,
+          });
+        } else {
+          res.status(401).json({ error: "password" });
+        }
+      });
+    }
+  });
 };
