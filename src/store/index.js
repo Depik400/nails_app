@@ -11,10 +11,15 @@ let vStore = new vuex.Store({
     design: [],
     JWT:'',
     token: "",
+    authState: false
   },
   mutations: {
     updateCalendar(state, tempCalendar) {
-      state.calendar = tempCalendar;
+      state.calendar = tempCalendar; 
+    },
+
+    updateAuthState(state,tempAuthState){
+      state.authState = tempAuthState;
     },
 
     updateToken(state, token) {
@@ -40,6 +45,10 @@ let vStore = new vuex.Store({
       vue.axios.get('/api/calendar').then(req => {
         commit("updateCalendar",req.data);
       })
+    },
+
+    setAuthState({commit},authState){
+      commit('updateAuthState',authState);
     },
 
     setJWT({commit},token){
@@ -73,6 +82,11 @@ let vStore = new vuex.Store({
     calendar(state) {
       return state.calendar;
     },
+
+    getAuthState(state){
+      return state.authState;
+    },
+
     services(state) {
       return state.services;
     },

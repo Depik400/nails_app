@@ -50,7 +50,10 @@
       />
     </div>
     <div class="orderStatus" v-if="orderStatus">
-      <p style="">Gut</p>
+      <p style="font-weight: bold; font-size: 18px">Ваша заявка принята</p>
+      <p>Вы можете отменить заказ не позднее, чем за день</p>
+      <router-link to="/profile"><input type="button" style="font-weight:400; font-size:14px" value="Перейти в профиль"></router-link>
+      <input type="button" style="font-weight:400; font-size:14px; margin-top:10px" value="На главную" @click="reloadPage">
     </div>
     <div
       v-if="authState"
@@ -169,6 +172,11 @@ export default {
   },
 
   methods: {
+
+    reloadPage: function (){
+      this.$router.go('/');
+    },
+
     total: function () {
       let totalPrice = this.selectedService.price;
       this.selectedAdSerivce.forEach((item) => (totalPrice += item.price));
@@ -283,6 +291,10 @@ export default {
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
+  background: white;
+  padding: 15px;
+  box-shadow:0px 0px 5px 10px rgba(145, 145, 145, 0.096);
+  border-radius: 10px;
 }
 
 .auth_input_wrapper > input {
@@ -290,6 +302,7 @@ export default {
   text-indent: 10px;
   border-radius: 10px;
   border: 1px solid black;
+
 }
 
 .auth_input_wrapper > label {

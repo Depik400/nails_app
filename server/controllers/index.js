@@ -135,7 +135,7 @@ exports.user = (req, res) => {
 };
 
 exports.singup = (req, res) => {
-  userModel.findOne({ email: req.body.user.email }, (err, user) => {
+  userModel.findOne({ login: req.body.user.login }, (err, user) => {
     if (err) {
       return res.status(404).json({
         error: "server_error",
@@ -149,7 +149,7 @@ exports.singup = (req, res) => {
     if (user) {
       bcrypt.compare(req.body.user.pass, user.pass, (err, match) => {
         if (match) {
-          let token = jwt.sign({ userId: savedU._id }, "sasdfgfbBBcsgASDt123", {
+          let token = jwt.sign({ userId: user._id }, "sasdfgfbBBcsgASDt123", {
             expiresIn: 604800, // 1 week
           });
           res.status(200).json({
