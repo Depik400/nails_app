@@ -1,6 +1,12 @@
 <template>
   <div class="result">
-    <div :style="[orderStatus||authState ? { filter: 'blur(15px)' } : { filter: 'none' }]">
+    <div
+      :style="[
+        orderStatus || authState
+          ? { filter: 'blur(15px)' }
+          : { filter: 'none' },
+      ]"
+    >
       <p style="font-size: 25px; font-weight: bold">Давайте уточним:</p>
       <p style="font-size: 20px">
         Вы записались на {{ dateItem.month }}, {{ dateItem.day }} в
@@ -52,8 +58,18 @@
     <div class="orderStatus" v-if="orderStatus">
       <p style="font-weight: bold; font-size: 18px">Ваша заявка принята</p>
       <p>Вы можете отменить заказ не позднее, чем за день</p>
-      <router-link to="/profile"><input type="button" style="font-weight:400; font-size:14px" value="Перейти в профиль"></router-link>
-      <input type="button" style="font-weight:400; font-size:14px; margin-top:10px" value="На главную" @click="reloadPage">
+      <router-link to="/profile"
+        ><input
+          type="button"
+          style="font-weight: 400; font-size: 14px"
+          value="Перейти в профиль"
+      /></router-link>
+      <input
+        type="button"
+        style="font-weight: 400; font-size: 14px; margin-top: 10px"
+        value="На главную"
+        @click="reloadPage"
+      />
     </div>
     <div
       v-if="authState"
@@ -122,6 +138,7 @@ export default {
       authStateTimer: false,
       authMode: false,
       orderStatus: false,
+      error: "",
       user: {
         email: "",
         login: "",
@@ -134,17 +151,32 @@ export default {
   computed: {
     ...mapGetters(["calendar", "services", "servicesAd", "design", "token"]),
     ...mapActions(["setToken"]),
+
     emailWidthLabel: function () {
       let width = this.user.email.length * 7 + "px";
-      return { width: width };
+      let color = this.testEmail() ? "#f59182" : "blue";
+      return {
+        width: width,
+        background: color,
+      };
     },
     loginWidthLabel: function () {
       let width = this.user.login.length * 7 + "px";
-      return { width: width };
+
+      let color = this.testLogin() ? "#f59182" : "blue";
+      return {
+        width: width,
+        background: color,
+      };
     },
     passWidthLabel: function () {
       let width = this.user.pass.length * 7 + "px";
-      return { width: width };
+
+      let color = this.testPass() ? "#f59182" : "blue";
+      return {
+        width: width,
+        background: color,
+      };
     },
   },
   mounted() {
@@ -172,9 +204,30 @@ export default {
   },
 
   methods: {
+    testEmail: function () {
+      let regex = new RegExp("^[A-Za-z0-9]+@[A-Za-z]+\\.[A-Za-z]+$", "gm");
+      return regex.test(this.user.email);
+    },
 
-    reloadPage: function (){
-      this.$router.go('/');
+    testLogin: function () {
+      let regex = new RegExp("^[A-Za-z0-9_.]{6,}$", "gm");
+      return regex.test(this.user.login);
+    },
+
+    testPass: function () {
+      let patternUpperCase = new RegExp("[A-Z]{1,}", "gm");
+      let patternLowerCase = new RegExp("[a-z]{1,}", "gm");
+      let patternDecimal = new RegExp("[0-9]{1,}", "gm");
+      return (
+        patternUpperCase.test(this.user.pass) &&
+        patternLowerCase.test(this.user.pass) &&
+        patternDecimal.test(this.user.pass) &&
+        this.user.pass.length > 6
+      );
+    },
+
+    reloadPage: function () {
+      this.$router.go("/");
     },
 
     total: function () {
@@ -184,12 +237,14 @@ export default {
       this.totalSum = totalPrice;
     },
     setAuth: function () {
-
-      if(localStorage.getItem('token') !== null){
+      if (localStorage.getItem("token") !== null) {
         this.sendServiceInfo();
         return;
       }
+      this.changeAuthState();
+    },
 
+    changeAuthState: function () {
       if (!this.authState) {
         this.authState = !this.authState;
         this.authStateTimer = !this.authStateTimer;
@@ -205,7 +260,7 @@ export default {
       let sender = (tr) => {
         this.axios
           .post("/api/userService", {
-            token: localStorage.getItem('token'),
+            token: localStorage.getItem("token"),
             date: this.dateItem,
             service: this.selectedService,
             serviceAd: this.selectedAdSerivce,
@@ -213,40 +268,39 @@ export default {
           })
           .then((result) => {
             //console.log(result);
-            if(result.status == 200){
-                this.orderStatus = true;
+            if (result.status == 200) {
+              this.orderStatus = true;
             }
           })
           .catch(() => {
-            if(tr == 2){
+            if (tr == 2) {
               return;
             }
 
-
             this.setToken;
             setTimeout(() => {
-              sender(tr+1);
+              sender(tr + 1);
             }, 500);
-
           });
       };
-
 
       sender(0);
     },
 
     sendUserInfo: function () {
+      if(!this.testEmail() || !this.testLogin()|| !this.testPass()){
+        this.err = 'error';
+        return;
+      }
       let url = this.authMode ? "singup" : "singin";
       console.log(url);
       let sender = (try_count) => {
         this.axios
-          .post("/api/" + url, {
-            user: this.user,
-          })
+          .post("/api/" + url, { user: this.user })
           .then((result) => {
-            console.log(result);
-            if(result.status == 200){
-              localStorage.setItem('token',result.data.token);
+            if (result.status == 200) {
+              localStorage.setItem("token", result.data.token);
+              this.changeAuthState();
               this.sendServiceInfo();
             }
           })
@@ -286,14 +340,14 @@ export default {
   margin: 0;
 }
 
-.orderStatus{
+.orderStatus {
   position: absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: white;
   padding: 15px;
-  box-shadow:0px 0px 5px 10px rgba(145, 145, 145, 0.096);
+  box-shadow: 0px 0px 5px 10px rgba(145, 145, 145, 0.096);
   border-radius: 10px;
 }
 
@@ -302,7 +356,6 @@ export default {
   text-indent: 10px;
   border-radius: 10px;
   border: 1px solid black;
-
 }
 
 .auth_input_wrapper > label {

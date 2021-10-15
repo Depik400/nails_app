@@ -3,10 +3,12 @@ const serviceModel = require("../models/service");
 const serviceAdModel = require("../models/serviceAd");
 const designModel = require("../models/design");
 const userModel = require("../models/user");
-const mongoose = require("mongoose");
+const userServicesModel = require("../models/userService");
+const mailTransporter = require("nodemailer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cmdColor = require("chalk");
+const chalk = require("chalk");
 
 exports.getToken = (req, res) => {
   let data = { csrfToken: req.csrfToken() };
@@ -69,7 +71,6 @@ exports.singin = (req, res) => {
       return res.status(200).json({
         error: "error",
       });
-      console.log("err - err");
     }
     console.log(users);
     if (users) {
@@ -79,7 +80,6 @@ exports.singin = (req, res) => {
       });
     }
 
-    console.log("gut");
     console.log(req.body);
     let user = new userModel();
     let salt = bcrypt.genSaltSync(10);
@@ -104,8 +104,20 @@ exports.userService = (req, res) => {
   jwt.verify(token, "sasdfgfbBBcsgASDt123", async (err, decoded) => {
     //console.log(decoded);
     let user = await userModel.findOne({ _id: decoded.userId });
-    console.log(cmdColor.blue("finded User"));
-    console.log(user);
+    let tempUserModel = new userServicesModel({
+      userId: decoded.userId,
+      date: req.body.date,
+      service: req.body.service,
+      serviceAd: req.body.serviceAd,
+      design: req.body.design,
+    });
+    tempUserModel.save();
+
+    let date = await calendarModel.findOneAndUpdate({_id: req.body.date._id},{isPickedByUser:true},{
+      new:true, upset:true
+    })
+
+    console.log(date);
     res.status(200).send();
   });
 };
@@ -118,13 +130,13 @@ exports.user = (req, res) => {
         error: "not authorizired",
       });
     }
-    console.log(decoded);
     userModel
       .findOne({ _id: decoded.userId })
       .lean()
       .exec((err, user) => {
-        console.log(err);
-        console.log(user);
+        console.log(
+          chalk.red("connected") + "\n" + chalk.blue("token - " + token)
+        );
         if (!err) {
           return res.status(200).json({
             login: user.login,

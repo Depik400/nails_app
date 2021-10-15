@@ -5,5 +5,6 @@ module.exports = mongoose.model("calendar", new mongoose.Schema({
     month:String,
     day:Number,
     hour: String,
-    isSelected:Boolean
+    isSelected:Boolean,
+    isPickedByUser: {type:Boolean, default: false}
 }));

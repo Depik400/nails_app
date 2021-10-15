@@ -12,5 +12,5 @@ module.exports = mongo.model("user", mongo.Schema({
         required:true,
         unique:true
     },
-    pass:String
+    pass:String 
 }))
